@@ -5,12 +5,16 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -29,15 +33,21 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             LayoutsinjetpackcomposecodelabTheme {
-                LayoutsCodelab()
+                LayoutsCodelab { modifier ->
+                    SimpleList(modifier)
+                }
             }
         }
     }
 }
 
 @Composable
-fun LayoutsCodelab() {
+fun LayoutsCodelab(
+    modifier: Modifier = Modifier,
+    content: @Composable (modifier: Modifier) -> Unit
+) {
     Scaffold(
+        modifier = modifier,
         topBar = {
             TopAppBar(
                 title = {
@@ -51,10 +61,7 @@ fun LayoutsCodelab() {
             )
         }
     ) { innerPadding ->
-        BodyContent(
-            Modifier
-                .padding(innerPadding)
-                .padding(8.dp))
+        content(Modifier.padding(innerPadding))
     }
 }
 
@@ -62,13 +69,17 @@ fun LayoutsCodelab() {
 @Composable
 fun LayoutsCodelabPreview() {
     LayoutsinjetpackcomposecodelabTheme {
-        LayoutsCodelab()
+        LayoutsCodelab { modifier ->
+            Greeting(
+                modifier.padding(8.dp)
+            )
+        }
     }
 }
 
 @Composable
-fun BodyContent(modifier: Modifier = Modifier) {
-    Column(modifier = modifier) {
+fun Greeting(modifier: Modifier = Modifier) {
+    Column(modifier = modifier.padding(8.dp)) {
         Text(text = "Hi there!")
         Text(text = "Thanks for going through the Layouts codelab")
     }
@@ -111,5 +122,26 @@ fun PhotographerCard(modifier: Modifier = Modifier) {
 fun PhotographerCardPreview() {
     LayoutsinjetpackcomposecodelabTheme {
         PhotographerCard()
+    }
+}
+
+@Composable
+fun SimpleList(modifier: Modifier = Modifier) {
+    val scrollState = rememberScrollState()
+
+    Column(modifier.scrollable(scrollState, Orientation.Vertical)) {
+        repeat(100) {
+            Text("Item #$it")
+        }
+    }
+}
+
+@Preview
+@Composable
+fun SimpleListPreview() {
+    LayoutsinjetpackcomposecodelabTheme {
+        LayoutsCodelab { modifier ->
+            SimpleList(modifier)
+        }
     }
 }
