@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import au.com.broscience.layoutsinjetpackcomposecodelab.ui.theme.LayoutsinjetpackcomposecodelabTheme
 import com.google.accompanist.coil.CoilImage
 import kotlinx.coroutines.launch
@@ -258,7 +259,7 @@ fun MyOwnColumn(
         modifier = modifier,
         content = content
     ) { measurables, constraints ->
-    // Don't constrain child views further, measure them with given constraints
+        // Don't constrain child views further, measure them with given constraints
         // List of measured children
         val placeables = measurables.map { measurable ->
             // Measure each child
@@ -271,7 +272,7 @@ fun MyOwnColumn(
         // Set the size of the layout as big as it can
         layout(constraints.maxWidth, constraints.maxHeight) {
             // Place children in the parent layout
-            placeables.forEach { placeable ->1
+            placeables.forEach { placeable ->
                 // Position item on the screen
                 placeable.placeRelative(x = 0, y = yPosition)
 
@@ -299,5 +300,34 @@ fun BodyContent(modifier: Modifier = Modifier) {
         Text("places items")
         Text("vertically.")
         Text("We've done it by hand!")
+    }
+}
+
+@Composable
+fun ConstraintLayoutContent() {
+    ConstraintLayout {
+        val (button, text) = createRefs()
+
+        Button(
+            onClick = { /*TODO*/ },
+            modifier = Modifier.constrainAs(button) {
+                top.linkTo(parent.top, margin = 16.dp)
+            }
+        ) {
+            Text("Button")
+        }
+
+        Text("Text", Modifier.constrainAs(text) {
+            top.linkTo(button.bottom, margin = 16.dp)
+            centerHorizontallyTo(parent)
+        })
+    }
+}
+
+@Preview
+@Composable
+fun ConstraintLayoutContentPreview() {
+    LayoutsinjetpackcomposecodelabTheme {
+        ConstraintLayoutContent()
     }
 }
